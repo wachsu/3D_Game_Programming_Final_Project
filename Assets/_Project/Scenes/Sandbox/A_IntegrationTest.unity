@@ -280,6 +280,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TestPlayerMovement
   moveSpeed: 5
   cameraTransform: {fileID: 961739753}
+  characterModel: {fileID: 0}
+  rotationSpeed: 10
   gravity: -9.81
 --- !u!143 &612525045
 CharacterController:
