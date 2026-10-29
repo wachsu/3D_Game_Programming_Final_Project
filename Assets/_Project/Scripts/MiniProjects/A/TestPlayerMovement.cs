@@ -63,10 +63,7 @@ public class TestPlayerMovement : MonoBehaviour
             forward.Normalize();
             right.Normalize();
 
-            direction =
-                forward * input.y +
-                right * input.x;
-
+            direction = forward * input.y + right * input.x;
             direction = Vector3.ClampMagnitude(direction, 1f);
         }
 
@@ -74,8 +71,7 @@ public class TestPlayerMovement : MonoBehaviour
         if (characterModel != null &&
             direction.sqrMagnitude > 0.001f)
         {
-            Quaternion targetRotation =
-                Quaternion.LookRotation(direction.normalized);
+            Quaternion targetRotation = Quaternion.LookRotation(direction.normalized);
 
             characterModel.rotation = Quaternion.Slerp(
                 characterModel.rotation,
@@ -91,11 +87,7 @@ public class TestPlayerMovement : MonoBehaviour
         }
 
         verticalVelocity += gravity * Time.deltaTime;
-
-        Vector3 movement =
-            direction * moveSpeed +
-            Vector3.up * verticalVelocity;
-
+        Vector3 movement = direction * moveSpeed + Vector3.up * verticalVelocity;
         _controller.Move(movement * Time.deltaTime);
     }
 }

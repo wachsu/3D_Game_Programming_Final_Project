@@ -5801,10 +5801,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f6cab84ee3b06a46987e37ada6bdca5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PortalTrigger
-  destination: {fileID: 0}
   destinationName: Destination_A
   arrivalParticles: {fileID: 3439647934043555708, guid: b182cd3c0582394479ac8a5f16dbfd7d, type: 3}
-  cooldownTime: 1
+  cooldownTime: 2
 --- !u!65 &658987194
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6140,14 +6139,7 @@ MonoBehaviour:
   tableMaterial: {fileID: 2100000, guid: cbe5454d815903d4d81e072211036953, type: 2}
   chairMaterial: {fileID: 2100000, guid: cbe5454d815903d4d81e072211036953, type: 2}
   shopMaterial: {fileID: 2100000, guid: 51dc65fe5db863047acb945285d55a7b, type: 2}
-  plantMaterial: {fileID: 2100000, guid: 51dc65fe5db863047acb945285d55a7b, type: 2}
   signMaterial: {fileID: 2100000, guid: 51dc65fe5db863047acb945285d55a7b, type: 2}
-  shopNames:
-  - BURGER
-  - PIZZA
-  - BREAD
-  - COFFEE
-  - DESSERT
   shopColors:
   - {r: 0.9, g: 0.3, b: 0.2, a: 1}
   - {r: 0.95, g: 0.65, b: 0.15, a: 1}
@@ -6180,7 +6172,6 @@ MonoBehaviour:
     - {fileID: 141815804522956509, guid: c177617d8d1fa264b8166dfc88f254dc, type: 3}
     - {fileID: 8516785752457475681, guid: d9c5382100ec3f74fbffd199f42c60f9, type: 3}
     - {fileID: 4869496135436380347, guid: 803f564725c0adf468fb6690b368d5ec, type: 3}
-  foodScale: 1
 --- !u!4 &788886871
 Transform:
   m_ObjectHideFlags: 0
@@ -12492,10 +12483,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f6cab84ee3b06a46987e37ada6bdca5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PortalTrigger
-  destination: {fileID: 0}
   destinationName: Destination_C
   arrivalParticles: {fileID: 3439647934043555708, guid: b182cd3c0582394479ac8a5f16dbfd7d, type: 3}
-  cooldownTime: 1
+  cooldownTime: 2
 --- !u!65 &1511242723
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -18265,10 +18255,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f6cab84ee3b06a46987e37ada6bdca5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PortalTrigger
-  destination: {fileID: 0}
   destinationName: Destination_B
   arrivalParticles: {fileID: 3439647934043555708, guid: b182cd3c0582394479ac8a5f16dbfd7d, type: 3}
-  cooldownTime: 1
+  cooldownTime: 2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
