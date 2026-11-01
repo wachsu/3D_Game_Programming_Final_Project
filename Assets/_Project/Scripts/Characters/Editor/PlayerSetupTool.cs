@@ -47,7 +47,7 @@ namespace Game.Characters.EditorTools
             cc.stepOffset = 0.3f;
 
             var instance = (GameObject)PrefabUtility.InstantiatePrefab(model, root.transform);
-            instance.transform.localPosition = Vector3.zero;
+            instance.transform.localPosition = new Vector3(0f, -cc.skinWidth, 0f);   // 抵銷 Skin Width，腳底貼地
             instance.transform.localRotation = Quaternion.identity;
 
             var animator = instance.GetComponent<Animator>();
