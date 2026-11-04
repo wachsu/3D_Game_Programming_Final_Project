@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.Characters.Pathfinding
@@ -15,6 +16,7 @@ namespace Game.Characters.Pathfinding
 
         private GridNode[,] _nodes;
         private int _countX, _countZ;
+        public float NodeSize => _nodeSize;   // 讓其他腳本讀得到格子大小 (只能讀，不能改)
 
         private void Awake()
         {
@@ -55,6 +57,56 @@ namespace Game.Characters.Pathfinding
             }
 
             Debug.Log($"[AStarGrid] 網格大小 {_countX} x {_countZ}，不能走的格子 {blockedCount} 格");
+        }
+
+        // 世界座標 -> 所在的格子
+        public GridNode NodeFromWorld(Vector3 worldPosition)
+        {
+            // ① 地板左下角的世界座標 (和 BuildGrid 裡算法一樣)
+            Vector3 bottomLeft = transform.position - new Vector3(_worldSize.x / 2f, 0f, _worldSize.y / 2f);
+
+            // ② 這個點離左下角多遠（世界座標）
+            Vector3 local = worldPosition - bottomLeft;
+
+            // ③ 世界座標轉成所在格子（除以格子大小，再無條件捨去）
+            int x = Mathf.FloorToInt(local.x / _nodeSize);
+            int z = Mathf.FloorToInt(local.z / _nodeSize);
+
+            // ④ 限制在 0 ~ 格數-1，點在地板外時才不會超出陣列
+            x = Mathf.Clamp(x, 0, _countX - 1);
+            z = Mathf.Clamp(z, 0, _countZ - 1);
+
+            return _nodes[x, z];
+        }
+
+        // 上下左右四個鄰居中，能走的那些 (CanMove(n, direction))
+        public List<GridNode> GetNeighbours(GridNode node)
+        {
+            List<GridNode> result = new List<GridNode>();
+
+            // 四個方向的位移：右、左、前 (+Z)、後 (-Z)
+            int[] dx = { 1, -1, 0, 0 };
+            int[] dz = { 0, 0, 1, -1 };
+
+            for (int i = 0; i < 4; i++)
+            {
+                // 鄰居的格子編號 = 自己的編號 + 位移
+                int nx = node.X + dx[i];
+                int nz = node.Z + dz[i];
+
+                // 超出網格範圍就跳過
+                if (nx < 0 || nx >= _countX || nz < 0 || nz >= _countZ)
+                    continue;
+
+                // 不能走 (紅格子) 也跳過
+                GridNode neighbour = _nodes[nx, nz];
+                if (!neighbour.Walkable)
+                    continue;
+
+                result.Add(neighbour);
+            }
+
+            return result;
         }
 
         // 在 Scene 視窗畫出網格 (只在 Editor 裡看得到，遊戲裡不會顯示)
