@@ -1606,7 +1606,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1175222374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1901,7 +1901,7 @@ GameObject:
   - component: {fileID: 1495620322}
   - component: {fileID: 1495620324}
   m_Layer: 0
-  m_Name: PathTester
+  m_Name: ClickInput
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2722,12 +2722,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Characters.Pathfinding.PathFollower
   _grid: {fileID: 153300857}
   _markers: {fileID: 534666967}
+  _straighten: 1
+  _smooth: 1
+  _smoothSpacing: 0.25
   _animator: {fileID: 0}
   _walkSpeed: 2
   _acceleration: 6
   _turnSpeed: 360
   _arriveDistance: 0.1
-  _slowDownDistance: 1
   _gravity: -20
 --- !u!1 &1967083374
 GameObject:

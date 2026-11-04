@@ -47,7 +47,7 @@ Located in `Assets/_Project/Scenes/Sandbox/MiniProjects_Characters/`.
 
 ### Smooth Path (`AStarPathfinder.SmoothPath`)
 - Slide 166: Catmull-Rom spline. Each segment p2 → p3 uses its neighbours p1 and p4 as control points (the end points are repeated at the start and end of the path), and is sampled every 0.25 m.
-- If any part of the curve crosses a blocked cell, the straight path is used instead.
+- If any part of the curve crosses a blocked cell, the path from before smoothing is used instead.
 
 ### Mouse Target (`MouseTargetPicker`)
 - A left click casts a ray from the camera through the mouse position onto the `Floor` layer only, and sends the hit point to the character.
@@ -65,7 +65,7 @@ Located in `Assets/_Project/Scenes/Sandbox/MiniProjects_Characters/`.
 - A new target recomputes the path from the character's current position and keeps the current speed, so it changes direction without stopping. A click with no solution is ignored and the character keeps its current path.
 
 ### Debug Tool (`PathTester`)
-- Draws the path between two scene objects with Gizmos and recomputes when either moves. Used during development to check the search; disabled in the final scene.
+- Draws the path between two scene objects with Gizmos and recomputes when either moves. Used during development to check the search. In the final scene the `PathTester` component on the `ClickInput` object is disabled; the `MouseTargetPicker` on the same object is active.
 
 ## 5. Requirement Checklist (Project Exercises PDF, 4.B.1)
 
@@ -102,12 +102,18 @@ All scripts are in `Assets/_Project/Scripts/Characters/Pathfinding/`.
 ### Reused from Mini Project 4.A.2
 - The sandbox environment and its 13 obstacles (the scene was copied from `A2_CharacterNavigation.unity`).
 - `Player.prefab`, its Animator Controller (Idle/Walk/Run Blend Tree), and the Cinemachine camera. In this scene `PlayerMotor` (keyboard control) is disabled and replaced by `PathFollower`, and the mouse-orbit camera input is disabled so the mouse can be used for clicking; the camera keeps a fixed 45° view.
+- The `NPC_Suit` character from 4.A.2 is disabled in this scene, because it is not on the `Obstacle` layer and would block the walking character without the grid knowing.
 - The gravity handling and Animator speed code in `PathFollower` follow the same approach as `PlayerMotor`.
 
 ### Reused or External Components
 - Character models and animation clips: Quaternius Animated Men Pack (CC0).
 - Cinemachine 3 and the Input System packages.
 - Unity built-in 3D primitives for the obstacles and spheres.
+
+### AI Assistance
+- Claude (Anthropic) was used as a step-by-step tutor: it explained the course slides, provided fill-in-the-blank code templates, and reviewed and helped debug my code.
+- I wrote the code in the blanks, set up the scene, the `PathMarker` prefab and material in the Unity Editor, and tested each step.
+- Claude also drafted this README.
 
 ## 8. Controls
 
@@ -126,5 +132,3 @@ All scripts are in `Assets/_Project/Scripts/Characters/Pathfinding/`.
 ## 10. Notes
 
 This is an independent mini project demo scene and can be tested separately from the final level scenes. The changes to the Player (PathFollower added, PlayerMotor disabled) are scene overrides in `B1_AStarPathfinding.unity` only; `Player.prefab` itself is unchanged.
-
-The scripts were written with step-by-step guidance from Claude (Anthropic), using fill-in-the-blank templates based on the course slides.

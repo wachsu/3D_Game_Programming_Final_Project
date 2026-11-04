@@ -10,11 +10,11 @@ namespace Game.Characters.Pathfinding
     {
         [Header("References")]
         [SerializeField] private AStarGrid _grid;
-        [SerializeField] private PathMarkers _markers;   // 可以不拖，不拖就不放小球
-        [SerializeField] private bool _straighten = true;   // 勾選：拉直路徑 (straight path)；不勾：原本的 A* 路徑
+        [SerializeField] private PathMarkers _markers;           // 可以不拖，不拖就不放小球
+        [SerializeField] private bool _straighten = true;        // 勾選：拉直路徑 (straight path)；不勾：原本的 A* 路徑
         [SerializeField] private bool _smooth = true;            // 勾選：拉直後再用 Catmull-Rom 平滑 (smooth path)
         [SerializeField] private float _smoothSpacing = 0.25f;   // 曲線上每隔幾公尺取一個點
-        [SerializeField] private Animator _animator;     // 空白時自動找子物件
+        [SerializeField] private Animator _animator;             // 空白時自動找子物件
 
         [Header("Movement")]
         [SerializeField] private float _walkSpeed = 2f;          // m/s
@@ -52,8 +52,12 @@ namespace Game.Characters.Pathfinding
             }
 
             // 起點換成角色的實際位置，終點換成滑鼠點到的位置
+            // 起點和終點在同一格時只有 1 個點，終點要另外加上去，不能蓋掉起點
             newPath[0] = transform.position;
-            newPath[newPath.Count - 1] = destination;
+            if (newPath.Count == 1)
+                newPath.Add(destination);
+            else
+                newPath[newPath.Count - 1] = destination;
 
             if (_straighten)
             {

@@ -16,11 +16,15 @@ namespace Game.Characters.Pathfinding
         }
         
         // A* 主迴圈：找到終點就回傳終點那格，找不到就回傳 null
-        // 路徑藏在終點一路往回的 Parent 裡，D4 再把它整理成清單
+        // 路徑藏在終點一路往回的 Parent 裡，BuildPath 再把它整理成清單
         public static GridNode FindPath(AStarGrid grid, Vector3 startPosition, Vector3 goalPosition)
         {
             GridNode start = grid.NodeFromWorld(startPosition);
             GridNode goal = grid.NodeFromWorld(goalPosition);
+
+            // 終點本身不能走 (例如點在柱子裡)：一定找不到路，不用搜完整張網格
+            if (!goal.Walkable)
+                return null;
 
             List<GridNode> open = new List<GridNode>();     // OPEN：鄰居還沒展開的格子
             List<GridNode> closed = new List<GridNode>();   // CLOSED：鄰居已經展開的格子
@@ -127,6 +131,7 @@ namespace Game.Characters.Pathfinding
             result.Add(path[path.Count - 1]);
             return result;
         }
+
         // Smooth path (投影片第 166 頁)：用 Catmull-Rom spline 把轉角變成圓滑的曲線
         // 曲線碰到障礙物的話，就退回原本的路徑
         public static List<Vector3> SmoothPath(AStarGrid grid, List<Vector3> path, float spacing)

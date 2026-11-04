@@ -26,7 +26,7 @@ namespace Game.Characters.Pathfinding
         // 建立網格
         public void BuildGrid()
         {
-            // 問題一的公式：總長度/每格大小，再轉成整數
+            // 格數 = 總長度 / 每格大小，再轉成整數
             _countX = Mathf.RoundToInt(_worldSize.x / _nodeSize);
             _countZ = Mathf.RoundToInt(_worldSize.y / _nodeSize);
 

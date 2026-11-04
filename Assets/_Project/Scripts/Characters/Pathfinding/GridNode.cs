@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Game.Characters.Pathfinding
 {
-    // A* path finding (mini project 4.B.1): 把地板切成 0.5 m 的格子，標出哪些格子能走
+    // 網格中的一格 (mini project 4.B.1)：位置、能不能走、A* 的 g/h/parent
     public class GridNode
     {
         public int X;
