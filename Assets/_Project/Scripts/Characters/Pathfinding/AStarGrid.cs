@@ -109,6 +109,25 @@ namespace Game.Characters.Pathfinding
             return result;
         }
 
+        // 兩點之間的直線有沒有穿過不能走的格子 (Connect nodes if no obstacles between them)
+        // 沿著直線每隔 1/4 格取一個點，檢查它所在的格子
+        public bool IsLineWalkable(Vector3 from, Vector3 to)
+        {
+            float distance = Vector3.Distance(from, to);
+            float step = _nodeSize / 4f;
+            int samples = Mathf.Max(1, Mathf.CeilToInt(distance / step));
+
+            for (int i = 0; i <= samples; i++)
+            {
+                float t = (float)i / samples;
+                Vector3 point = Vector3.Lerp(from, to, t);
+                if (!NodeFromWorld(point).Walkable)
+                    return false;   // 碰到紅格子，這條直線不能走
+            }
+
+            return true;   // 每個點都在能走的格子上
+        }
+
         // 在 Scene 視窗畫出網格 (只在 Editor 裡看得到，遊戲裡不會顯示)
         private void OnDrawGizmos()
         {

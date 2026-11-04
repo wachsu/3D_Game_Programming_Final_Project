@@ -101,5 +101,31 @@ namespace Game.Characters.Pathfinding
             path.Reverse();
             return path;
         }
+
+        // Straight path：從目前的點能直接走到的就連直線，中間的點不要
+        // 只留下「真的需要轉彎」的點
+        public static List<Vector3> StraightenPath(AStarGrid grid, List<Vector3> path)
+        {
+            if (path.Count <= 2)
+                return path;   // 只有起點和終點，已經是直線了
+
+            List<Vector3> result = new List<Vector3>();
+            result.Add(path[0]);
+
+            int anchor = 0;   // 目前站在第幾個點 (最後一個留下來的點)
+            for (int i = 2; i < path.Count; i++)
+            {
+                // 從 anchor 直接走到第 i 個點會撞到障礙物
+                // → 第 i - 1 個點是必要的轉彎點，留下來，並從那裡繼續
+                if (!grid.IsLineWalkable(path[anchor], path[i]))
+                {
+                    result.Add(path[i-1]);
+                    anchor = i - 1;
+                }
+            }
+
+            result.Add(path[path.Count - 1]);
+            return result;
+        }
     }
 }

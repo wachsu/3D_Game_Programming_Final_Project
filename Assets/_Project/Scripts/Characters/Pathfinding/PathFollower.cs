@@ -11,6 +11,7 @@ namespace Game.Characters.Pathfinding
         [Header("References")]
         [SerializeField] private AStarGrid _grid;
         [SerializeField] private PathMarkers _markers;   // 可以不拖，不拖就不放小球
+        [SerializeField] private bool _straighten = true;   // 勾選：拉直路徑 (straight path)；不勾：原本的 A* 路徑
         [SerializeField] private Animator _animator;     // 空白時自動找子物件
 
         [Header("Movement")]
@@ -18,7 +19,6 @@ namespace Game.Characters.Pathfinding
         [SerializeField] private float _acceleration = 6f;       // 加速度 m/s²
         [SerializeField] private float _turnSpeed = 360f;        // 每秒最多轉幾度
         [SerializeField] private float _arriveDistance = 0.1f;   // 離路徑點多近算走到了
-        [SerializeField] private float _slowDownDistance = 1f;   // 離終點多遠開始減速
         [SerializeField] private float _gravity = -20f;
 
         private static readonly int SpeedParam = Animator.StringToHash("Speed");
@@ -49,8 +49,20 @@ namespace Game.Characters.Pathfinding
                 return;
             }
 
+            // 起點換成角色的實際位置，終點換成滑鼠點到的位置
+            newPath[0] = transform.position;
+            newPath[newPath.Count - 1] = destination;
+
+            if (_straighten)
+            {
+                int before = newPath.Count;
+                newPath = AStarPathfinder.StraightenPath(_grid, newPath);
+                Debug.Log($"[PathFollower] 拉直路徑：{before} 個點 → {newPath.Count} 個點");
+            }
+
             _path = newPath;
-            _index = 1;   // 第 0 個點是腳下那格的中心，跳過它
+            _index = 1;   // 第 0 個點就是角色現在的位置，跳過它
+            
             if (_markers != null)
                 _markers.Show(_path);
         }
@@ -82,7 +94,8 @@ namespace Game.Characters.Pathfinding
 
                 // 快到終點時慢慢減速，不要急煞
                 float distanceToEnd = FlatDistance(transform.position, _path[_path.Count - 1]);
-                targetSpeed = _walkSpeed * Mathf.Clamp01(distanceToEnd / _slowDownDistance);
+                // 用固定的減速度煞車 (v = √(2as))，剛好在終點停下
+                targetSpeed = Mathf.Min(_walkSpeed, Mathf.Sqrt(2f * _acceleration * distanceToEnd));
             }
             _speed = Mathf.MoveTowards(_speed, targetSpeed, _acceleration * dt);
 
