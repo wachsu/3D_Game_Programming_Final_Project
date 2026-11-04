@@ -127,5 +127,53 @@ namespace Game.Characters.Pathfinding
             result.Add(path[path.Count - 1]);
             return result;
         }
+        // Smooth path (投影片第 166 頁)：用 Catmull-Rom spline 把轉角變成圓滑的曲線
+        // 曲線碰到障礙物的話，就退回原本的路徑
+        public static List<Vector3> SmoothPath(AStarGrid grid, List<Vector3> path, float spacing)
+        {
+            if (path.Count <= 2)
+                return path;   // 只有一段直線，沒有轉角可以平滑
+
+            List<Vector3> result = new List<Vector3>();
+            for (int i = 0; i < path.Count - 1; i++)
+            {
+                // 四個控制點：這一段是 p2 → p3，p1 和 p4 是前、後各一個點
+                // 頭尾沒有前一個 / 後一個點時，就用自己
+                Vector3 p1 = path[Mathf.Max(i - 1, 0)];
+                Vector3 p2 = path[i];
+                Vector3 p3 = path[i+1];
+                Vector3 p4 = path[Mathf.Min(i + 2, path.Count - 1)];
+
+                // 這一段每隔 spacing 公尺取一個點 (u 從 0 到 1，不含 1，因為 1 就是下一段的開頭)
+                int samples = Mathf.Max(1, Mathf.CeilToInt(Vector3.Distance(p2, p3) / spacing));
+                for (int k = 0; k < samples; k++)
+                {
+                    float u = (float)k / samples;
+                    result.Add(CatmullRom(p1, p2, p3, p4, u));
+                }
+            }
+            result.Add(path[path.Count - 1]);   // 終點
+
+            // 檢查曲線的每一小段有沒有碰到障礙物
+            for (int i = 0; i < result.Count - 1; i++)
+            {
+                if (!grid.IsLineWalkable(result[i], result[i + 1]))
+                    return path;   // 碰到了：不要平滑，用原本的路徑
+            }
+
+            return result;
+        }
+
+        // 投影片第 166 頁的公式：u = 0 時是 p2，u = 1 時是 p3
+        private static Vector3 CatmullRom(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, float u)
+        {
+            float u2 = u * u;
+            float u3 = u2 * u;
+
+            return p1 * (-0.5f * u3 + u2 - 0.5f * u)
+                 + p2 * (1.5f * u3 - 2.5f * u2 + 1f)
+                 + p3 * (-1.5f * u3 + 2f * u2 + 0.5f * u)
+                 + p4 * (0.5f * u3 - 0.5f * u2);
+        }
     }
 }

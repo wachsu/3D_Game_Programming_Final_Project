@@ -12,6 +12,8 @@ namespace Game.Characters.Pathfinding
         [SerializeField] private AStarGrid _grid;
         [SerializeField] private PathMarkers _markers;   // 可以不拖，不拖就不放小球
         [SerializeField] private bool _straighten = true;   // 勾選：拉直路徑 (straight path)；不勾：原本的 A* 路徑
+        [SerializeField] private bool _smooth = true;            // 勾選：拉直後再用 Catmull-Rom 平滑 (smooth path)
+        [SerializeField] private float _smoothSpacing = 0.25f;   // 曲線上每隔幾公尺取一個點
         [SerializeField] private Animator _animator;     // 空白時自動找子物件
 
         [Header("Movement")]
@@ -58,6 +60,12 @@ namespace Game.Characters.Pathfinding
                 int before = newPath.Count;
                 newPath = AStarPathfinder.StraightenPath(_grid, newPath);
                 Debug.Log($"[PathFollower] 拉直路徑：{before} 個點 → {newPath.Count} 個點");
+            }
+            if (_smooth)
+            {
+                int before = newPath.Count;
+                newPath = AStarPathfinder.SmoothPath(_grid, newPath, _smoothSpacing);
+                Debug.Log($"[PathFollower] 平滑路徑：{before} 個點 → {newPath.Count} 個點");
             }
 
             _path = newPath;
