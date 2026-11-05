@@ -10,13 +10,13 @@
 - **鍾君逸｜Game Logic & UI**：開場故事、勝敗條件、計時器與 UI（樓層地圖、提示、救援清單）、音效與敘事文字、定義共用介面（GameEvents、IRescueTarget、IClueTrigger）。
 
 ## 1. 關卡內容（依 proposal 第 7 節）
-每人負責一關的場景搭建；三關場景與 NPC 類型完全不同。依序過關：救完該關所有 NPC 才解鎖下一關，每關有獨立計時。
+分工依遊戲架構拆分（場景／角色／邏輯 UI），不採一人一關：三關的場景都由徐畹茜搭建，NPC 與玩家機制都由盧語沁實作，流程、UI 與特效都由鍾君逸負責。三關場景與 NPC 類型完全不同。依序過關：救完該關所有 NPC 才解鎖下一關，每關有獨立計時。
 
-| 關卡 | 負責 | 場景 | NPC | 阻礙 | 專屬機制 |
-|---|---|---|---|---|---|
-| Level 1｜B1 | 徐畹茜 | 美食街（食安危機發生地） | 大人：正常速度、穩定跟隨、不亂跑 | 餐桌、椅子、餐車；清潔車或臨時物品擋路，需找替代路線 | 教學關：互動、帶路、繞過障礙 |
-| Level 2｜3F | 鍾君逸 | 玩具樓層 | 小孩：速度較快，太久沒注意會跑去玩具展示區 | 玩具架、積木堆、玩具箱、大型布偶（會擋視線） | 跳躍：引導小孩跳過低矮障礙（積木堆、玩具箱），可走與第 1 關不同的路線；跑掉要重新找回並互動 |
-| Level 3｜7F | 盧語沁 | 電影院| 老人：速度慢，玩家走太快會落後 | 不規則座位、窄走道、階梯、散落飲料杯與爆米花桶 | 手電筒（昏暗環境）；推開可移動障礙（Rigidbody） |
+| 關卡 | 場景 | NPC | 阻礙 | 專屬機制 |
+|---|---|---|---|---|
+| Level 1｜B1 | 美食街（食安危機發生地） | 大人：正常速度、穩定跟隨、不亂跑 | 餐桌、椅子、餐車；清潔車或臨時物品擋路，需找替代路線 | 教學關：互動、帶路、繞過障礙 |
+| Level 2｜3F | 玩具樓層 | 小孩：速度較快，太久沒注意會跑去玩具展示區 | 玩具架、積木堆、玩具箱、大型布偶（會擋視線） | 跳躍：引導小孩跳過低矮障礙（積木堆、玩具箱），可走與第 1 關不同的路線；跑掉要重新找回並互動 |
+| Level 3｜7F | 電影院（多間影廳，各自配置與出入口不同） | 老人：速度慢，玩家走太快會落後 | 不規則座位、窄走道、階梯、散落飲料杯與爆米花桶 | 手電筒（昏暗環境）；推開可移動障礙（Rigidbody） |
 
 英雄旅程對應：第 1 關 = The Inmost Cave；第 2 關 = The Supreme Ordeal → Seizing the Sword；第 3 關 = The Road Back → Resurrection。
 
@@ -47,13 +47,15 @@
 | 輪次 | 徐畹茜（場景） | 盧語沁（角色/NPC） | 鍾君逸（邏輯/UI） |
 |---|---|---|---|
 | 1 | 4.A.3 Game portals（手扶梯/電梯在三關樓層間傳送） | 4.A.2 Character navigation | 4.E.2 Function selection（主選單） |
-| 2 | 4.D.1 Environment effects（美食街：灑出的湯汁變慢、清潔後打蠟地板加速、跳上台階） | 4.B.1 A* path finding | 4.D.3 Character particle & sound effects（找到廁所閃光、跳躍/落地音效） |
-| 3 | 4.A.1 Hierarchical model（餐車、旋轉招牌） | 4.C.2 Group steering（小孩亂跑、分心跑向玩具） | 4.E.3 Game UI（小地圖、救援清單、計時條） |
-| 4 | 4.C.3 Deformable surfaces（美食街攤位布簾/布旗） | 4.B.2 AI characters → 自訂「Escort Follower AI」（老人跟隨） | 4.E.1 Save & Load |
+| 2 | 4.D.1 Environment effects（美食街：灑出的湯汁變慢、清潔後打蠟地板加速、跳上台階） | 4.B.1 A* path finding | 4.E.3 Game UI（小地圖、救援清單、計時條） |
+| 3 | 4.A.1 Hierarchical model（餐車、旋轉招牌） | 4.B.2 AI characters → 自訂「Escort Follower AI」（老人跟隨，用 4.B.1 的 A* 找路） | 4.D.3 Character particle & sound effects（找到廁所閃光、跳躍/落地音效） |
+| 4 | 4.C.3 Deformable surfaces（美食街攤位布簾/布旗） | 4.C.2 Group steering（小孩亂跑、分心跑向玩具） | 4.E.1 Save & Load |
+
+- 順序對齊 proposal 第 11 節 Sprint：Sprint 2 計時器/UI、老人護送；Sprint 3 音效整合、小孩引導收尾。
 
 - 備用題：4.C.4 Character interaction（正好對應第 3 關推障礙機制）、4.C.1 Mass-spring（掛飾）。
 - 不選：4.D.2 Combat（與正向主題衝突）。
-- B.2 原題要求「攻擊」→ 改自訂題（拉衣角/要求等待），盧語沁 於第 2 輪 demo 前寄助教。
+- B.2 原題要求「攻擊」→ 改自訂題（拉衣角/要求等待），盧語沁 於第 3 輪 demo 前至少一週寄助教。
 - 第 1 輪元件完成後盡快 merge 進共用 repo，供他人第 2 輪使用。
 
 ## 4. 開發環境
@@ -120,7 +122,7 @@ public interface ISaveable {       // 需存檔元件實作，鍾君逸 的 E.1 
 - A* 網格每格 0.5 m，只把 Obstacle layer 當障礙；LowObstacle 對小孩（跳躍時）可通行。
 - Layers：6 Player、7 NPC、8 Obstacle、9 Floor、10 Trigger、11 Interactable、12 LowObstacle。
 - Tags：Player、Restroom、Portal、Clue、Pushable。
-- 場景：`Main.unity`（鍾君逸：GameManager、UI、玩家、攝影機）；三關各一 scene（`Level1_FoodCourt`、`Level2_ToyFloor`、`Level3_Theater`），additive 載入，僅負責人可改；個人 `Scenes/Sandbox/<名字>.unity` 開發 mini project。
+- 場景：`Main.unity`（鍾君逸：GameManager、UI、玩家、攝影機）；三關各一 scene（`Level1_FoodCourt`、`Level2_ToyFloor`、`Level3_Theater`），additive 載入，皆由徐畹茜維護；其他人要在關卡裡放東西時，做成 prefab 交給徐畹茜擺放，或先跟她說好再改；個人 `Scenes/Sandbox/<名字>.unity` 開發 mini project。
 - 資料夾：`Assets/_Project/Scripts/{Core(鍾君逸),Level(徐畹茜),Characters(盧語沁),UI(鍾君逸)}`、`Prefabs/ Scenes/ Art/ Audio/`。
 - 命名：類別 PascalCase、private `_camelCase`、namespace `Game.Core` / `Game.Level` …
 - 美術：low-poly；Kenney、Poly Pizza、Quaternius；Mixamo 動畫（Humanoid）；音效 Pixabay、Kenney Impact Sounds；來源記入 References。
@@ -130,3 +132,7 @@ public interface ISaveable {       // 需存檔元件實作，鍾君逸 的 E.1 
 - 每個 mini project 附 `README.md`，分「新寫的部分 / 重用的部分」。
 - 流程：Sandbox 完成並 demo → 再整合進關卡 scene。
 - 卡關超過三天 → 立即改用簡化或備案做法（proposal 風險管理）。
+
+## 待辦 / 未定
+- demo 實際日期（尚未提供，拿到後對應四輪）。
+- 第一次會議確認本規格。

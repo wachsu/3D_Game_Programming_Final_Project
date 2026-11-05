@@ -28,18 +28,7 @@ public class FoodCourtGenerator : MonoBehaviour
     public Material tableMaterial;
     public Material chairMaterial;
     public Material shopMaterial;
-    public Material plantMaterial;
     public Material signMaterial;
-
-    [Header("Shop Design")]
-    public string[] shopNames =
-{
-    "BURGER",
-    "PIZZA",
-    "BREAD",
-    "COFFEE",
-    "DESSERT"
-};
 
     public Color[] shopColors =
     {
@@ -48,11 +37,10 @@ public class FoodCourtGenerator : MonoBehaviour
     new Color(0.25f, 0.65f, 0.55f),
     new Color(0.45f, 0.30f, 0.20f),
     new Color(0.75f, 0.45f, 0.75f)
-};
+    };
 
     [Header("Food Models")]
     public ShopFoodConfig[] shopFoods;
-    public float foodScale = 0.5f;
     private Transform generatedRoot;
 
     void Start()
@@ -68,7 +56,6 @@ public class FoodCourtGenerator : MonoBehaviour
 
         GenerateTables();
         GenerateShops();
-        //GeneratePlants();
     }
 
 
@@ -91,8 +78,7 @@ public class FoodCourtGenerator : MonoBehaviour
                 if (IsNearPortal(position))
                     continue;
 
-                GameObject diningSet =
-                    new GameObject($"DiningSet_{row}_{col}");
+                GameObject diningSet = new GameObject($"DiningSet_{row}_{col}");
 
                 diningSet.transform.SetParent(generatedRoot);
                 diningSet.transform.position = position;
@@ -139,8 +125,7 @@ public class FoodCourtGenerator : MonoBehaviour
         );
 
         chair.transform.SetParent(parent, false);
-        chair.transform.localPosition =
-            new Vector3(side * 1.45f, 0f, 0f);
+        chair.transform.localPosition = new Vector3(side * 1.45f, 0f, 0f);
 
         // Seat
         CreatePrimitive(
@@ -241,11 +226,7 @@ public class FoodCourtGenerator : MonoBehaviour
 
 
             // Display food
-
-            ShopFoodConfig config =
-                (shopFoods != null && i < shopFoods.Length)
-                    ? shopFoods[i]
-                    : null;
+            ShopFoodConfig config = (shopFoods != null && i < shopFoods.Length) ? shopFoods[i] : null;
 
             if (config != null && config.foodPrefabs != null)
             {
@@ -258,41 +239,25 @@ public class FoodCourtGenerator : MonoBehaviour
                     if (prefab == null)
                         continue;
 
-                    // Arrange foods evenly across the counter
                     float spacing = 1.0f;
                     float k = (j - (foodCount - 1) / 2f) * spacing;
 
-                    GameObject food = Instantiate(
-                        prefab,
-                        shop.transform
-                    );
-
+                    GameObject food = Instantiate( prefab, shop.transform);
                     food.name = $"DisplayFood_{j + 1}";
-
-                    // Counter height = 1.1
-                    food.transform.localPosition =
-                        new Vector3(k, 1.1f, -0.65f);
-
+                    food.transform.localPosition = new Vector3(k, 1.1f, -0.65f); // Counter height = 1.1
                     food.transform.localRotation = Quaternion.identity;
-
-                    // Preserve the prefab's original scale.
-                    // Do not overwrite localScale.
                 }
             }
-
 
 
             // Shop name
             GameObject nameObject = new GameObject("ShopName");
             nameObject.transform.SetParent(shop.transform, false);
-            nameObject.transform.localPosition =
-                new Vector3(0f, 3.15f, -0.19f);
-
-            nameObject.transform.localRotation =
-                Quaternion.Euler(0f, 0f, 0f);
+            nameObject.transform.localPosition = new Vector3(0f, 3.15f, -0.19f);
+            nameObject.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
 
             TextMesh nameText = nameObject.AddComponent<TextMesh>();
-            nameText.text = shopNames[i % shopNames.Length];
+            nameText.text = config != null ? config.shopName : $"SHOP {i + 1}";
             nameText.fontSize = 64;
             nameText.characterSize = 0.08f;
             nameText.anchor = TextAnchor.MiddleCenter;
@@ -302,37 +267,6 @@ public class FoodCourtGenerator : MonoBehaviour
     }
 
 
-
-    //void GeneratePlants()
-    //{
-    //    Vector3[] plantPositions =
-    //    {
-    //        new Vector3(-12f, 0f, -10f),
-    //        new Vector3( 12f, 0f, -10f),
-    //        new Vector3(-12f, 0f,  10f),
-    //        new Vector3( 12f, 0f,  10f),
-    //        new Vector3(-12f, 0f,   0f),
-    //        new Vector3( 12f, 0f,   0f)
-    //    };
-
-    //    for (int i = 0; i < plantPositions.Length; i++)
-    //    {
-    //        Vector3 position = plantPositions[i];
-
-    //        if (IsNearPortal(transform.position + position))
-    //            continue;
-
-    //        CreatePrimitive(
-    //            PrimitiveType.Cylinder,
-    //            $"Plant_{i + 1}",
-    //            generatedRoot,
-    //            position + Vector3.up * 0.9f,
-    //            new Vector3(0.6f, 0.9f, 0.6f),
-    //            plantMaterial
-    //        );
-    //    }
-    //}
-
     bool IsNearPortal(Vector3 position)
     {
         foreach (Transform portal in portals)
@@ -341,11 +275,8 @@ public class FoodCourtGenerator : MonoBehaviour
                 continue;
 
             Vector2 a = new Vector2(position.x, position.z);
-            Vector2 b = new Vector2(
-                portal.position.x,
-                portal.position.z
-            );
-
+            Vector2 b = new Vector2(portal.position.x, portal.position.z);
+            
             if (Vector2.Distance(a, b) < portalClearance)
                 return true;
         }
