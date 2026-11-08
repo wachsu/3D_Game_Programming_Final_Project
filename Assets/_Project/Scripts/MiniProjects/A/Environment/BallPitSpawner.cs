@@ -1,20 +1,17 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BallPitSpawner : MonoBehaviour
 {
     [Header("Ball")]
     [SerializeField] private GameObject ballPrefab;
-    [SerializeField, Min(1)] private int ballCount = 300;
-    [SerializeField, Min(0.01f)] private float ballDiameter = 0.2f;
+    [SerializeField, Min(1)] private int ballCount = 2000;
+    [SerializeField, Min(0.01f)] private float ballDiameter = 0.3f;
 
     [Header("Spawn Area")]
     [SerializeField]
-    private Vector3 areaSize =
-        new Vector3(5f, 2f, 4f);
+    private Vector3 areaSize = new Vector3(5f, 2f, 4f);
 
-    //[SerializeField, Min(0f)] private float spawnGap = 0.01f;
     [SerializeField, Min(1)] private int maxAttemptsPerBall = 200;
 
     [Header("Physics")]
@@ -33,9 +30,8 @@ public class BallPitSpawner : MonoBehaviour
 
     [Header("Spawn Timing")]
     [SerializeField] private int ballsPerBatch = 20;
-    [SerializeField] private float batchInterval = 0.5f;
+    [SerializeField] private float batchInterval = 0.001f;
 
-    //private readonly List<Vector3> spawnPositions = new();
 
     private IEnumerator Start()
     {
@@ -52,12 +48,7 @@ public class BallPitSpawner : MonoBehaviour
 
         while (spawned < ballCount)
         {
-            int batchTarget = Mathf.Min(
-                ballsPerBatch,
-                ballCount - spawned
-            );
-
-            int batchSpawned = 0;
+            int batchTarget = Mathf.Min(ballsPerBatch, ballCount - spawned);
 
             for (int i = 0; i < batchTarget; i++)
             {
@@ -67,22 +58,12 @@ public class BallPitSpawner : MonoBehaviour
                 for (int attempt = 0; attempt < maxAttemptsPerBall; attempt++)
                 {
                     Vector3 localPosition = new Vector3(
-                        Random.Range(
-                            -areaSize.x / 2f + radius,
-                             areaSize.x / 2f - radius
-                        ),
-                        Random.Range(
-                            radius,
-                            areaSize.y - radius
-                        ),
-                        Random.Range(
-                            -areaSize.z / 2f + radius,
-                             areaSize.z / 2f - radius
-                        )
+                        Random.Range(-areaSize.x / 2f + radius, areaSize.x / 2f - radius),
+                        Random.Range(radius, areaSize.y - radius),
+                        Random.Range(-areaSize.z / 2f + radius, areaSize.z / 2f - radius)
                     );
 
                     Vector3 candidate = transform.TransformPoint(localPosition);
-
                     bool blocked = Physics.CheckSphere(
                         candidate,
                         radius * 0.98f,
@@ -107,21 +88,14 @@ public class BallPitSpawner : MonoBehaviour
                     yield break;
                 }
 
-                GameObject ball = Instantiate(
-                    ballPrefab,
-                    spawnPosition,
-                    Quaternion.identity
-                );
-
-                ball.transform.localScale =
-                    Vector3.one * ballDiameter;
+                GameObject ball = Instantiate(ballPrefab, spawnPosition, Quaternion.identity);
+                ball.transform.localScale = Vector3.one * ballDiameter;
 
                 Renderer ballRenderer = ball.GetComponent<Renderer>();
 
                 if (ballRenderer != null && ballColors.Length > 0)
                 {
-                    ballRenderer.material.color =
-                        ballColors[Random.Range(0, ballColors.Length)];
+                    ballRenderer.material.color = ballColors[Random.Range(0, ballColors.Length)];
                 }
 
                 Rigidbody rb = ball.GetComponent<Rigidbody>();
@@ -134,25 +108,11 @@ public class BallPitSpawner : MonoBehaviour
                 }
 
                 spawned++;
-                batchSpawned++;
             }
 
             yield return new WaitForSeconds(batchInterval);
         }
 
         Debug.Log($"Finished spawning {spawned} balls.");
-    }
-
-    private readonly List<GameObject> spawnedBalls = new();
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.cyan;
-        Gizmos.matrix = transform.localToWorldMatrix;
-
-        Gizmos.DrawWireCube(
-            new Vector3(0f, areaSize.y * 0.5f, 0f),
-            areaSize
-        );
     }
 }
