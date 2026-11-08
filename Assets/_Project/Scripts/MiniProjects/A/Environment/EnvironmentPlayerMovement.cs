@@ -26,14 +26,12 @@ public class EnvironmentPlayerMovement : MonoBehaviour
 
     [Header("Ball Pit Push")]
     [SerializeField] private LayerMask ballLayer;
-    [SerializeField] private float ballPushRadius = 0.65f;
     [SerializeField] private float ballPushSpeed = 2f;
 
     private CharacterController _controller;
     private float verticalVelocity;
 
-    public bool IsGrounded =>
-        _controller != null && _controller.isGrounded;
+    public bool IsGrounded => _controller != null && _controller.isGrounded;
 
     private void Awake()
     {
@@ -50,7 +48,6 @@ public class EnvironmentPlayerMovement : MonoBehaviour
         if (_controller == null)
             return;
 
-        // Read keyboard input
         Vector2 input = Vector2.zero;
 
         if (Keyboard.current != null)
@@ -85,12 +82,9 @@ public class EnvironmentPlayerMovement : MonoBehaviour
             direction = Vector3.ClampMagnitude(direction, 1f);
         }
 
-        // Rotate character toward movement direction
-        if (characterModel != null &&
-            direction.sqrMagnitude > 0.001f)
+        if (characterModel != null && direction.sqrMagnitude > 0.001f)
         {
-            Quaternion targetRotation =
-                Quaternion.LookRotation(direction);
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
 
             characterModel.rotation = Quaternion.Slerp(
                 characterModel.rotation,
@@ -104,21 +98,14 @@ public class EnvironmentPlayerMovement : MonoBehaviour
             verticalVelocity = -2f;
         }
 
-        if (Keyboard.current != null &&
-            Keyboard.current.rKey.wasPressedThisFrame)
+        if (Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame)
         {
             Jump(jumpHeight);
         }
 
         verticalVelocity += gravity * Time.deltaTime;
-
-        Vector3 movement =
-            direction * moveSpeed * speedMultiplier +
-            Vector3.up * verticalVelocity;
-
+        Vector3 movement = direction * moveSpeed * speedMultiplier + Vector3.up * verticalVelocity;
         _controller.Move(movement * Time.deltaTime);
-
-        PushNearbyBalls(direction);
 
         UpdateAnimation(direction);
     }
@@ -132,10 +119,7 @@ public class EnvironmentPlayerMovement : MonoBehaviour
     {
         if (_controller == null || !_controller.isGrounded)
             return;
-
-        verticalVelocity = Mathf.Sqrt(
-            height * -2f * gravity
-        );
+        verticalVelocity = Mathf.Sqrt(height * -2f * gravity);
     }
 
     private void UpdateAnimation(Vector3 direction)
@@ -161,39 +145,32 @@ public class EnvironmentPlayerMovement : MonoBehaviour
         }
     }
 
-    private void PushNearbyBalls(Vector3 moveDirection)
+    private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        if (moveDirection.sqrMagnitude < 0.001f)
+        Rigidbody rb = hit.collider.attachedRigidbody;
+
+        if (rb == null || rb.isKinematic)
             return;
 
-        Vector3 center = _controller.bounds.center;
+        if ((ballLayer.value & (1 << hit.gameObject.layer)) == 0)
+            return;
 
-        Collider[] balls = Physics.OverlapSphere(
-            center,
-            ballPushRadius,
-            ballLayer,
-            QueryTriggerInteraction.Ignore
-        );
+        if (hit.moveDirection.y < -0.3f)
+            return;
 
         Vector3 pushDirection = new Vector3(
-            moveDirection.x,
+            hit.moveDirection.x,
             0f,
-            moveDirection.z
+            hit.moveDirection.z
         ).normalized;
 
-        foreach (Collider ball in balls)
-        {
-            Rigidbody rb = ball.attachedRigidbody;
+        if (pushDirection.sqrMagnitude < 0.001f)
+            return;
 
-            if (rb == null || rb.isKinematic)
-                continue;
-
-            Vector3 velocity = rb.linearVelocity;
-
-            velocity.x = pushDirection.x * ballPushSpeed;
-            velocity.z = pushDirection.z * ballPushSpeed;
-
-            rb.linearVelocity = velocity;
-        }
+        rb.linearVelocity = new Vector3(
+            pushDirection.x * ballPushSpeed,
+            rb.linearVelocity.y,
+            pushDirection.z * ballPushSpeed
+        );
     }
 }

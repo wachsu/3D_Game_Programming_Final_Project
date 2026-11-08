@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1387392065653635436}
   - component: {fileID: 818837723728590652}
   - component: {fileID: 6367995519827745233}
+  - component: {fileID: -1578634787537029651}
   m_Layer: 0
   m_Name: 078-floor-cushion-set_3 (1)
   m_TagString: Untagged
@@ -90,3 +91,25 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &-1578634787537029651
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7937616528768631670}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 9062416085785389693, guid: e6bedce9d0b71ee46b97b8e31d3c1f05, type: 3}
