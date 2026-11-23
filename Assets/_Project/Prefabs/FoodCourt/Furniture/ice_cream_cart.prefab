@@ -48,6 +48,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 6a26225eacab09e4d82d728b6700e7d1, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: aceab0fc84237b1468214c7790485536, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 6a26225eacab09e4d82d728b6700e7d1, type: 3}
+      propertyPath: 'm_Materials.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 55516010e908f16439c682a6cc46bb49, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 6a26225eacab09e4d82d728b6700e7d1, type: 3}
+      propertyPath: 'm_Materials.Array.data[4]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b455bc4a3ee4b3149a01c9d4a050c4fe, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 6a26225eacab09e4d82d728b6700e7d1, type: 3}
+      propertyPath: 'm_Materials.Array.data[9]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 7b11c55332aa4e04a87f4c01b2fe9e96, type: 2}
     - target: {fileID: 919132149155446097, guid: 6a26225eacab09e4d82d728b6700e7d1, type: 3}
       propertyPath: m_Name
       value: ice_cream_cart
